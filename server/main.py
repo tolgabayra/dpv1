@@ -3,8 +3,12 @@ from flask_cors import CORS
 from controller.auth_controller import auth_controller
 from model import db
 
+from config import Config
+
+
 app = Flask(__name__, static_folder="uploads")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://root:root@localhost/postgres'
+app.config.from_object(Config)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
 db.init_app(app)
