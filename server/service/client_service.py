@@ -16,12 +16,12 @@ class ClientService:
             weight=data["weight"],
             target_weight=data["weight"],
             chronic_illnesses=data["chronic_illnesses"],
-            package_id=data["package_id"],
+            package_id=data.get("package_id") # defeault değer none zorunlu değil
 
         )
-        db.session.add(data)
+        db.session.add(client)
         db.session.commit()
-        db.session.refresh()
+        db.session.refresh(client)
         return client
 
     @staticmethod
@@ -55,6 +55,8 @@ class ClientService:
                 "weight": client.weight,
                 "target_weight": client.target_weight,
                 "chronic_illnesses": client.chronic_illnesses,
+                "created_at": client.created_at,
+                "updated_at": client.updated_at
 
             }
         else:
@@ -72,7 +74,7 @@ class ClientService:
 
     @staticmethod
     def list(user_id):
-        clients = Client.query.filter_by(user_id).all()
+        clients = Client.query.filter_by(user_id=user_id).all()
         client_list = []
         for client in clients:
             client_list.append({

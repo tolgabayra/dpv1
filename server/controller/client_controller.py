@@ -8,10 +8,13 @@ client_controller = Blueprint("client_controller", __name__)
 def create_client():
     data = request.get_json()
     client = ClientService.create(data)
-    return jsonify({"Message: ": "Client Created Successfully."}), 201
+    if client:
+         return jsonify({"Message: ": "Client Created Successfully."}), 201
+    else:
+        return jsonify({"Message: ": "Sorry, client can not created. Check your informations"})
 
-
-@client_controller.route("/<int:user_id>", methods=["GET"])
+   
+@client_controller.route("by_user/<int:user_id>", methods=["GET"])
 def list_client(user_id):
     clients = ClientService.list(user_id)
     return jsonify({"Clients": clients}), 200
