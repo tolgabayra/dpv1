@@ -28,6 +28,16 @@ class User(db.Model):
         return check_password_hash(self.password, password)
 
 
+
+client_package = db.Table('client_package',
+    db.Column('client_id', db.Integer, db.ForeignKey('clients.id', ondelete='CASCADE'), primary_key=True),
+    db.Column('package_id', db.Integer, db.ForeignKey('packages.id', ondelete='CASCADE'), primary_key=True),
+    db.Column('created_at', db.DateTime, default=datetime.utcnow),
+    db.Column('updated_at', db.DateTime, onupdate=datetime.utcnow)
+)
+
+
+
 class Client(db.Model):
     __tablename__ = 'clients'
     id = db.Column(db.Integer, primary_key=True)
@@ -61,6 +71,8 @@ class Appointment(db.Model):
     client = db.relationship('Client', backref='appointments')
 
 
+
+
 class Package(db.Model):
     __tablename__ = 'packages'
 
@@ -72,13 +84,14 @@ class Package(db.Model):
     desc = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    clients = db.relationship('Client', secondary=client_package, backref='packages')
+
 
 
 class DietPlan(db.Model):
     __tablename__ = 'diet_plans'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -86,3 +99,30 @@ class DietPlan(db.Model):
 
     def __repr__(self):
         return f"Diet Plan {self.id} for User {self.user_id}"
+
+
+
+class AnalysisResult(db.Model):
+    __tablename__ = 'analysis_results'
+
+    id = db.Column(db.Integer, primary_key=True)
+    client_id = db.Column(db.Integer, db.ForeignKey('clients.id', ondelete='CASCADE'), nullable=False)
+    analysis_type = db.Column(db.String(50), nullable=False)
+    result = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "client_id": self.client_id,
+            "analysis_type": self.analysis_type,
+            "result": self.result,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+    
+
+
+
+# ondelete='CASCADE' ifadesi, bir modelde yer alan bir kayıt silindiğinde, bu kaydın ilgili alanını referans alan diğer tüm kayıtların da otomatik olarak silinmesi anlamına gelir. Bu, birincil anahtar / yabancı anahtar ilişkileriyle ilgili olarak veritabanı bütünlüğünü korumak için kullanılır. Örneğin, bir kullanıcı hesabı silindiğinde, bu kullanıcıya ait tüm randevu kayıtlarının da silinmesini isteyebilirsiniz. Bu nedenle, ondelete='CASCADE' ifadesi kullanarak bu işlemi otomatikleştirebilirsiniz.
