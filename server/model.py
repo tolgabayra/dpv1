@@ -16,6 +16,17 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
+    def to_dict(self):
+        return{
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
 
 class Client(db.Model):
     __tablename__ = 'clients'
