@@ -4,7 +4,7 @@ from service.client_service import ClientService
 client_controller = Blueprint("client_controller", __name__)
 
 
-@client_controller.route("/", methdos=["POST"])
+@client_controller.route("/", methods=["POST"])
 def create_client():
     data = request.get_json()
     client = ClientService.create(data)
