@@ -55,6 +55,23 @@ class Client(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "gender": self.gender,
+            "age": self.age,
+            "height": self.height,
+            "weight": self.weight,
+            "target_weight": self.target_weight,
+            "chronic_illnesses": self.chronic_illnesses,
+            "package_id": self.package_id,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+
 
 # Randevular
 class Appointment(db.Model):
@@ -69,6 +86,8 @@ class Appointment(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     user = db.relationship('User', backref='appointments')
     client = db.relationship('Client', backref='appointments')
+
+    
 
 
 
@@ -86,6 +105,18 @@ class Package(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     clients = db.relationship('Client', secondary=client_package, backref='packages')
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "price": self.price,
+            "session_count": self.session_count,
+            "duration": self.duration,
+            "desc": self.desc,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+
 
 
 class DietPlan(db.Model):
@@ -96,6 +127,15 @@ class DietPlan(db.Model):
     end_date = db.Column(db.Date, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "start_date": self.start_date,
+            "end_date": self.end_date,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
 
     def __repr__(self):
         return f"Diet Plan {self.id} for User {self.user_id}"
