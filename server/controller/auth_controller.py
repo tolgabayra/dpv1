@@ -12,7 +12,7 @@ def login():
     password = data["password"]
 
     data = AuthService.login(email, password)
-    if data["access_token"] is None:
+    if data is None:
         return jsonify({"message": "Invalid email or password"}), 401
 
     response = jsonify({"access_token": data["access_token"], "user_id": data["user_id"]})

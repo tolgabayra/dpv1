@@ -17,7 +17,7 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-CORS(app)
+CORS(app, supports_credentials=True)
 app.register_blueprint(auth_controller, url_prefix="/api/v1/auth")
 app.register_blueprint(client_controller, url_prefix="/api/v1/clients")
 app.register_blueprint(appointment_controller, url_prefix="/api/v1/appointments")

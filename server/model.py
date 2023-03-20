@@ -51,7 +51,7 @@ class Client(db.Model):
     target_weight = db.Column(db.Float)
     chronic_illnesses = db.Column(db.Text)
     package_id = db.Column(db.Integer, db.ForeignKey('packages.id'), nullable=True)
-    package = db.relationship('Package', backref='clients')
+    package = db.relationship('Package', backref='clients_packages')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
