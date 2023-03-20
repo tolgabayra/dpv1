@@ -17,7 +17,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Overview | Yuhu CRM
+        Overview | Yuhu CRM .
       </title>
     </Head>
     <Box
