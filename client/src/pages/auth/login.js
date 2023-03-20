@@ -167,7 +167,7 @@ const Page = () => {
                     sx={{ mt: 3 }}
                     variant="body2"
                   >
-                    {formik.errors.submit}
+                    <p>Check your information !</p>
                   </Typography>
                 )}
                 <Button

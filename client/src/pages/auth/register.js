@@ -13,7 +13,7 @@ const Page = () => {
   const formik = useFormik({
     initialValues: {
       email: '',
-      username: '',
+      name: '',
       password: '',
       submit: null
     },
@@ -23,7 +23,7 @@ const Page = () => {
         .email('Must be a valid email')
         .max(255)
         .required('Email is required'),
-      username: Yup
+      name: Yup
         .string()
         .max(255)
         .required('Username is required'),
@@ -34,7 +34,7 @@ const Page = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        await auth.signUp(values.email, values.username, values.password);
+        await auth.signUp(values.email, values.name, values.password);
         router.push('/');
       } catch (err) {
         helpers.setStatus({ success: false });
@@ -97,21 +97,21 @@ const Page = () => {
             >
               <Stack spacing={3}>
                 <TextField
-                  error={!!(formik.touched.username && formik.errors.username)}
+                  error={!!(formik.touched.name && formik.errors.name)}
                   fullWidth
-                  helperText={formik.touched.username && formik.errors.username}
+                  helperText={formik.touched.name && formik.errors.name}
                   label="Username"
-                  username="username"
+                  name="name"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
-                  value={formik.values.username}
+                  value={formik.values.name}
                 />
                 <TextField
                   error={!!(formik.touched.email && formik.errors.email)}
                   fullWidth
                   helperText={formik.touched.email && formik.errors.email}
                   label="Email Address"
-                  username="email"
+                  name="email"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                   type="email"
@@ -122,7 +122,7 @@ const Page = () => {
                   fullWidth
                   helperText={formik.touched.password && formik.errors.password}
                   label="Password"
-                  username="password"
+                  name="password"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                   type="password"

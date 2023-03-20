@@ -130,12 +130,12 @@ export const AuthProvider = (props) => {
 
   const signIn = async (email, password) => {
 
-   const result = await appAxios.post("/api/v1/auth/login", {
+    const result = await appAxios.post("/api/v1/auth/login", {
       email,
       password
-    })
+    }, {withCredentials: true})
     console.log(result);
-    if (email !== 'demo@devias.io' || password !== 'Password123!') {
+    if (result.status === 401) {
       throw new Error('Please check your email and password');
     }
 
@@ -158,8 +158,16 @@ export const AuthProvider = (props) => {
     });
   };
 
-  const signUp = async (email, name, password) => {
-    throw new Error('Sign up is not implemented');
+  const signUp = async (email, username, password) => {
+    const result = await appAxios.post("/api/v1/auth/register", {
+      email,
+      username,
+      password
+    })
+    console.log(result);
+    if (result.status === 201) {
+      console.log(result);
+    }
   };
 
   const signOut = () => {
