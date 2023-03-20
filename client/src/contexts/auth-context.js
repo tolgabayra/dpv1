@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { appAxios } from 'src/utils/axios';
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -128,6 +129,12 @@ export const AuthProvider = (props) => {
   };
 
   const signIn = async (email, password) => {
+
+   const result = await appAxios.post("/api/v1/auth/login", {
+      email,
+      password
+    })
+    console.log(result);
     if (email !== 'demo@devias.io' || password !== 'Password123!') {
       throw new Error('Please check your email and password');
     }
