@@ -134,7 +134,8 @@ export const AuthProvider = (props) => {
       email,
       password
     }, {withCredentials: true})
-    console.log(result);
+    console.log(result.data.user_id);
+    localStorage.setItem("user_id", result.data.user_id)
     if (result.status === 401) {
       throw new Error('Please check your email and password');
     }
