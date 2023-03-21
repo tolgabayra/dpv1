@@ -15,7 +15,12 @@ const style = {
 };
 
 
-export default function CustomersAddModal(props) {
+export const  CustomersAddModal = (props) => {
+    const {
+        
+    } = props;
+
+
     const [open, setOpen] = useState(false)
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
@@ -23,7 +28,7 @@ export default function CustomersAddModal(props) {
     return (
         <Modal
             open={open}
-            onClose={onClose}
+            onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >

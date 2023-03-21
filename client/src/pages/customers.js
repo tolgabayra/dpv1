@@ -4,13 +4,12 @@ import { subDays, subHours } from 'date-fns';
 import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
 import ArrowUpOnSquareIcon from '@heroicons/react/24/solid/ArrowUpOnSquareIcon';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
+import { Box, Button, Container, Stack, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, SvgIcon, Typography, MenuItem } from '@mui/material';
 import { useSelection } from 'src/hooks/use-selection';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { CustomersTable } from 'src/sections/customer/customers-table';
 import { CustomersSearch } from 'src/sections/customer/customers-search';
 import { applyPagination } from 'src/utils/apply-pagination';
-import { CustomersAddModal } from 'src/sections/customer/customers-add-modal';
 
 const now = new Date();
 
@@ -157,6 +156,22 @@ const data = [
   }
 ];
 
+
+const genders = [
+  {
+    value: "Erkek",
+    label: "",
+  },
+  {
+    value: "Kadın",
+    label: "",
+  },
+  {
+    value: "Diğer",
+    label: "",
+  }
+]
+
 const useCustomers = (page, rowsPerPage) => {
   return useMemo(
     () => {
@@ -195,6 +210,24 @@ const Page = () => {
     },
     []
   );
+
+
+
+
+
+
+  const [open, setOpen] = useState(false)
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
+
 
   return (
     <>
@@ -250,6 +283,7 @@ const Page = () => {
               </Stack>
               <div>
                 <Button
+                  onClick={handleClickOpen}
                   startIcon={(
                     <SvgIcon fontSize="small">
                       <PlusIcon />
@@ -259,6 +293,124 @@ const Page = () => {
                 >
                   Ekle
                 </Button>
+
+                <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>Yeni Danışan Ekle</DialogTitle>
+                  <DialogContent
+                   sx={{ marginLeft: "12PX"}}
+                  >
+                    <DialogContentText>
+                      To subscribe to this website, please enter your email address here. We
+                      will send updates occasionally.
+                    </DialogContentText>
+                    <TextField
+                      sx={{ marginRight: "60px" }}
+                      type="text"
+                      variant="standard"
+                      margin="dense"
+                      id="firstname"
+                      label="Adı"
+                    />
+                    <TextField
+                      type="text"
+                      margin="dense"
+                      variant="standard"
+                      id="lastname"
+                      label="Soyadı"
+                    />
+                    <TextField
+                      sx={{ marginRight: "60px", width: "220px" }}
+                      margin="dense"
+                      variant="standard"
+                      id="outlined-select-currency"
+                      select
+                      label="Cinsiyet"
+                      defaultValue="Erkek"
+                      helperText="Lütfen cinsiyet seçiniz"
+                    >
+                      {genders.map((gender) => (
+                        <MenuItem key={gender.value} value={gender.value}>
+                          {gender.value}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+
+                    <TextField
+
+                      type="number"
+                      margin="dense"
+                      variant="standard"
+                      id="lastname"
+                      label="Yaş"
+
+                    />
+                    <TextField
+                      sx={{ marginRight: "60px" }}
+
+                      type="number"
+                      margin="dense"
+                      variant="standard"
+                      id="kilo"
+                      label="Kilo(Kg)"
+
+                    />
+                    <TextField
+
+                      type="number"
+                      margin="dense"
+                      variant="standard"
+                      id="boy"
+                      label="Boy(Cm)"
+
+                    />
+                    <TextField
+                      sx={{ marginRight: "60px" }}
+
+                      type="number"
+                      margin="dense"
+                      variant="standard"
+                      id="kilo"
+                      label="Hedef Kilo(Kg)"
+
+                    />
+                    <TextField
+
+                      type="text"
+                      margin="dense"
+                      variant="standard"
+                      id="cronic_illness"
+                      label="Kronik Hastalık(Var ise)"
+
+                    />
+
+
+                    <TextField
+                      sx={{ marginRight: "60px" }}
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Telefon "
+                      type="email"
+                      variant="standard"
+                    />
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Email Address"
+                      type="email"
+
+                      variant="standard"
+                    />
+
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose}>İptal</Button>
+                    <Button onClick={handleClose}>Ekle</Button>
+                  </DialogActions>
+                </Dialog>
+
+
               </div>
             </Stack>
             <CustomersSearch />
