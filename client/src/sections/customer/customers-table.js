@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import {
   Avatar,
   Box,
+  Button,
   Card,
   Checkbox,
   Stack,
@@ -16,6 +17,8 @@ import {
 } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
 import { getInitials } from 'src/utils/get-initials';
+import { useEffect } from 'react';
+import { appAxios } from 'src/utils/axios';
 
 export const CustomersTable = (props) => {
   const {
@@ -34,6 +37,27 @@ export const CustomersTable = (props) => {
 
   const selectedSome = (selected.length > 0) && (selected.length < items.length);
   const selectedAll = (items.length > 0) && (selected.length === items.length);
+
+
+
+  useEffect(() => {
+   console.log(selected);
+    
+  }, [selected])
+
+
+
+
+
+  const clientDeleteSubmit = () => {
+    
+  }
+
+  const clientUpdateSubmit = () => {
+    
+  }
+
+
 
   return (
     <Card>
@@ -69,6 +93,9 @@ export const CustomersTable = (props) => {
                 </TableCell>
                 <TableCell>
                   Signed Up
+                </TableCell>
+                <TableCell>
+                  İşlemler
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -120,6 +147,11 @@ export const CustomersTable = (props) => {
                     </TableCell>
                     <TableCell>
                       {createdAt}
+                    </TableCell>
+                    <TableCell >
+                      <Button variant="contained" color="error" >Sil</Button>
+                      <span> | </span>
+                      <Button variant="contained" color="info" >Düzenle</Button>
                     </TableCell>
                   </TableRow>
                 );

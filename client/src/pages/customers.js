@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import { subDays, subHours } from 'date-fns';
 import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
@@ -10,6 +10,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { CustomersTable } from 'src/sections/customer/customers-table';
 import { CustomersSearch } from 'src/sections/customer/customers-search';
 import { applyPagination } from 'src/utils/apply-pagination';
+import { appAxios } from 'src/utils/axios';
 
 const now = new Date();
 
@@ -191,6 +192,21 @@ const useCustomerIds = (customers) => {
 };
 
 const Page = () => {
+  const [clients, setClients] = useState([])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const customers = useCustomers(page, rowsPerPage);
@@ -227,6 +243,21 @@ const Page = () => {
   };
 
 
+
+
+
+
+
+
+
+
+  useEffect(() => {
+    appAxios.get(`/api/v1/clients/by_user/1`)
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch(err=>console.log(err))
+  },[])
 
 
   return (
@@ -297,11 +328,10 @@ const Page = () => {
                 <Dialog open={open} onClose={handleClose}>
                   <DialogTitle>Yeni Danışan Ekle</DialogTitle>
                   <DialogContent
-                   sx={{ marginLeft: "12PX"}}
+                   sx={{ margin: "12px"}}
                   >
-                    <DialogContentText>
-                      To subscribe to this website, please enter your email address here. We
-                      will send updates occasionally.
+                    <DialogContentText marginBottom="12px" >
+                      Danışanlarınızın bilgilerini burada girip, daha sonra değişterebilirsiniz.
                     </DialogContentText>
                     <TextField
                       sx={{ marginRight: "60px" }}
