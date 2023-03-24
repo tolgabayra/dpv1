@@ -1,188 +1,218 @@
-import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import React, { useState } from 'react';
 import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  Stack,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
+  TableFooter,
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Paper,
+  TextField,
+  Checkbox,
+  IconButton
 } from '@mui/material';
-import { Scrollbar } from 'src/components/scrollbar';
-import { getInitials } from 'src/utils/get-initials';
-import { useEffect } from 'react';
-import { appAxios } from 'src/utils/axios';
-
-export const CustomersTable = (props) => {
-  const {
-    count = 0,
-    items = [],
-    onDeselectAll,
-    onDeselectOne,
-    onPageChange = () => {},
-    onRowsPerPageChange,
-    onSelectAll,
-    onSelectOne,
-    page = 0,
-    rowsPerPage = 0,
-    selected = []
-  } = props;
-
-  const selectedSome = (selected.length > 0) && (selected.length < items.length);
-  const selectedAll = (items.length > 0) && (selected.length === items.length);
-
-
-
-  useEffect(() => {
-   console.log(selected);
-    
-  }, [selected])
 
 
 
 
 
-  const clientDeleteSubmit = () => {
-    
-  }
+const customers = [
+  { id: 1, name: 'John Doe', email: 'john.doe@example.com', status: 'Active' },
+  { id: 2, name: 'Jane Doe', email: 'jane.doe@example.com', status: 'Inactive' },
+  { id: 3, name: 'Bob Smith', email: 'bob.smith@example.com', status: 'Active' },
+  { id: 4, name: 'Alice Johnson', email: 'alice.johnson@example.com', status: 'Inactive' },
+  { id: 5, name: 'Mike Wilson', email: 'mike.wilson@example.com', status: 'Active' },
+];
 
-  const clientUpdateSubmit = () => {
-    
-  }
 
 
+
+
+const CustomersTable = () => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selected, setSelected] = useState([]);
+
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+
+
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      const newSelected = filteredCustomers.map((customer) => customer.id);
+      setSelected(newSelected);
+    } else {
+      setSelected([]);
+    }
+  };
+
+  const handleSelectOne = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelected(newSelected);
+  };
+
+
+
+
+
+
+  const editSelectedCustomers = (selectedCustomers) => {
+    // do something with selected customers
+    console.log('Selected customers:', selectedCustomers);
+  };
+
+
+
+  const handleDeleteSelected = () => {
+    const newCustomers = customers.filter((customer) => !selected.includes(customer.id));
+    // Silinen müşterilerin listesi
+    const deletedCustomers = customers.filter((customer) => selected.includes(customer.id));
+    // Silinen müşterilerin işlemleri burada yapılabilir
+    console.log('Deleted customers:', deletedCustomers);
+    // Yeni müşterilerin listesi
+    console.log('New customers:', newCustomers);
+  };
+
+
+  const handleEditSelected = () => {
+    // Seçili müşterilerin verilerini al
+    const selectedCustomers = customers.filter(customer => isSelected(customer.id));
+
+    // İşlev çağrısı ile seçili müşterileri düzenleme sayfasına aktar
+    editSelectedCustomers(selectedCustomers);
+  };
+
+
+
+
+
+
+
+
+  const isSelected = (id) => selected.indexOf(id) !== -1;
+
+
+
+
+
+
+
+
+  const filteredCustomers = customers.filter((customer) =>
+    customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <Card>
-      <Scrollbar>
-        <Box sx={{ minWidth: 800 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedAll}
-                    indeterminate={selectedSome}
-                    onChange={(event) => {
-                      if (event.target.checked) {
-                        onSelectAll?.();
-                      } else {
-                        onDeselectAll?.();
-                      }
-                    }}
-                  />
-                </TableCell>
-                <TableCell>
-                  Name
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Location
-                </TableCell>
-                <TableCell>
-                  Phone
-                </TableCell>
-                <TableCell>
-                  Signed Up
-                </TableCell>
-                <TableCell>
-                  İşlemler
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {items.map((customer) => {
-                const isSelected = selected.includes(customer.id);
-                const createdAt = format(customer.createdAt, 'dd/MM/yyyy');
+    <div>
+      <TextField
+        label="Search"
+        variant="outlined"
+        size="small"
+        value={searchTerm}
+        onChange={handleSearch}
+      />
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell padding="checkbox">
+                <Checkbox
+                  indeterminate={
+                    selected.length > 0 && selected.length < filteredCustomers.length
+                  }
+                  checked={selected.length === filteredCustomers.length}
+                  onChange={handleSelectAll}
+                />
+              </TableCell>
+              <TableCell>ID</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Action</TableCell> {/* Edit ve Delete butonları için yeni TableCell */}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredCustomers
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((customer) => {
+                const isItemSelected = isSelected(customer.id);
 
                 return (
                   <TableRow
-                    hover
                     key={customer.id}
-                    selected={isSelected}
+                    hover
+                    onClick={(event) => handleSelectOne(event, customer.id)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    selected={isItemSelected}
                   >
                     <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={isSelected}
-                        onChange={(event) => {
-                          if (event.target.checked) {
-                            onSelectOne?.(customer.id);
-                          } else {
-                            onDeselectOne?.(customer.id);
-                          }
-                        }}
-                      />
+                      <Checkbox checked={isItemSelected} />
                     </TableCell>
+                    <TableCell>{customer.id}</TableCell>
+                    <TableCell>{customer.name}</TableCell>
+                    <TableCell>{customer.email}</TableCell>
+                    <TableCell>{customer.status}</TableCell>
                     <TableCell>
-                      <Stack
-                        alignItems="center"
-                        direction="row"
-                        spacing={2}
-                      >
-                        <Avatar src={customer.avatar}>
-                          {getInitials(customer.name)}
-                        </Avatar>
-                        <Typography variant="subtitle2">
-                          {customer.name}
-                        </Typography>
-                      </Stack>
-                    </TableCell>
-                    <TableCell>
-                      {customer.email}
-                    </TableCell>
-                    <TableCell>
-                      {customer.address.city}, {customer.address.state}, {customer.address.country}
-                    </TableCell>
-                    <TableCell>
-                      {customer.phone}
-                    </TableCell>
-                    <TableCell>
-                      {createdAt}
-                    </TableCell>
-                    <TableCell >
-                      <Button variant="contained" color="error" >Sil</Button>
-                      <span> | </span>
-                      <Button variant="contained" color="info" >Düzenle</Button>
-                    </TableCell>
+                      <TableCell align="right">
+                        <IconButton onClick={() => handleEditSelected(customer.id)}>
+                          Edit
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteSelected(customer.id)}>
+                          Delete
+                        </IconButton>
+                      </TableCell>
+                    </TableCell> {/* İki butonun bulunduğu TableCell */}
                   </TableRow>
                 );
               })}
-            </TableBody>
-          </Table>
-        </Box>
-      </Scrollbar>
-      <TablePagination
-        component="div"
-        count={count}
-        onPageChange={onPageChange}
-        onRowsPerPageChange={onRowsPerPageChange}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
-    </Card>
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                count={filteredCustomers.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+    </div>
   );
 };
 
-CustomersTable.propTypes = {
-  count: PropTypes.number,
-  items: PropTypes.array,
-  onDeselectAll: PropTypes.func,
-  onDeselectOne: PropTypes.func,
-  onPageChange: PropTypes.func,
-  onRowsPerPageChange: PropTypes.func,
-  onSelectAll: PropTypes.func,
-  onSelectOne: PropTypes.func,
-  page: PropTypes.number,
-  rowsPerPage: PropTypes.number,
-  selected: PropTypes.array
-};
+export default CustomersTable;
