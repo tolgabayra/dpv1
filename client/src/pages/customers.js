@@ -32,7 +32,16 @@ const genders = [
 const Page = () => {
   const [clients, setClients] = useState([])
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-
+  const [newClient, setNewClient] = useState({
+    first_name: "",
+    last_name: "",
+    gender: "",
+    age: null,
+    weight: null,
+    height: null,
+    target_weight: null,
+    chronic_illness: ""
+  })
 
 
   const [open, setOpen] = useState(false)
@@ -64,6 +73,26 @@ const Page = () => {
       })
       .catch(err => console.log(err))
   }, [])
+
+
+
+  const createNewClient = () => {
+    appAxios.post("/api/v1/clients", {
+      first_name: newClient.first_name,
+      last_name: newClient.last_name,
+      age: newClient.age,
+      weight: newClient.weight,
+      height: newClient.height,
+      target_weight: newClient.target_weight,
+      chronic_illness: newClient.chronic_illness
+    })
+      .then((res) => {
+        console.log("CREATED");
+      })
+      .catch(err = {
+
+      })
+  }
 
 
   return (
@@ -140,6 +169,7 @@ const Page = () => {
                       Danışanlarınızın bilgilerini burada girip, daha sonra değişterebilirsiniz.
                     </DialogContentText>
                     <TextField
+                      onChange={(e) => setNewClient({ ...newClient, first_name: e.target.value })}
                       sx={{ marginRight: "60px" }}
                       type="text"
                       variant="standard"
@@ -148,6 +178,7 @@ const Page = () => {
                       label="Adı"
                     />
                     <TextField
+                      onChange={(e) => setNewClient({ ...newClient, last_name: e.target.value })}
                       type="text"
                       margin="dense"
                       variant="standard"
@@ -155,6 +186,7 @@ const Page = () => {
                       label="Soyadı"
                     />
                     <TextField
+                      onChange={(e) => setNewClient({ ...newClient, gender: e.target.value })}
                       sx={{ marginRight: "60px", width: "220px" }}
                       margin="dense"
                       variant="standard"
@@ -172,7 +204,7 @@ const Page = () => {
                     </TextField>
 
                     <TextField
-
+                      onChange={(e) => setNewClient({ ...newClient, age: e.target.value })}
                       type="number"
                       margin="dense"
                       variant="standard"
@@ -181,6 +213,7 @@ const Page = () => {
 
                     />
                     <TextField
+                      onChange={(e) => setNewClient({ ...newClient, weight: e.target.value })}
                       sx={{ marginRight: "60px" }}
 
                       type="number"
@@ -191,7 +224,7 @@ const Page = () => {
 
                     />
                     <TextField
-
+                      onChange={(e) => setNewClient({ ...newClient, height: e.target.value })}
                       type="number"
                       margin="dense"
                       variant="standard"
@@ -200,6 +233,7 @@ const Page = () => {
 
                     />
                     <TextField
+                      onChange={(e) => setNewClient({ ...newClient, target_weight: e.target.value })}
                       sx={{ marginRight: "60px" }}
 
                       type="number"
@@ -210,7 +244,7 @@ const Page = () => {
 
                     />
                     <TextField
-
+                      onChange={(e) => setNewClient({ ...newClient, chronic_illness: e.target.value })}
                       type="text"
                       margin="dense"
                       variant="standard"
@@ -249,8 +283,8 @@ const Page = () => {
 
               </div>
             </Stack>
-             
-           <CustomersTable />
+
+            <CustomersTable />
 
           </Stack>
         </Container>

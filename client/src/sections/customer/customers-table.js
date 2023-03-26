@@ -46,6 +46,7 @@ const genders = [
 
 
 const CustomersTable = (props) => {
+  const [showMessage, setShowMessage] = useState(false)
   const [customers, setCustomers] = useState([])
   const [open, setOpen] = useState(false)
   const [page, setPage] = useState(0);
@@ -136,10 +137,10 @@ const CustomersTable = (props) => {
     console.log("BURASI SİLME İŞLEMİ");
     appAxios.delete(`/api/v1/clients/${selectedCustomer.id}`)
       .then(() => {
-        return (<> Başarılı... </>)
+        setShowMessage(true)
       })
       .catch(err => {
-        return
+        
       })
   }
 
@@ -196,12 +197,12 @@ const CustomersTable = (props) => {
         onChange={handleSearch}
       />
       <Snackbar
-        open={true}
-        autoHideDuration={6000}
+        open={showMessage}
+        autoHideDuration={1500}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         onClose={handleClose}
-        message="Note archived">
-        <Alert severity="success">This is a success message!</Alert>
+        message="Seçilen Danışan Silindi">
+        <Alert severity="success">İşlem Başarılı, Seçilen Danışan Silindi</Alert>
       </Snackbar>
 
       <Dialog open={open} onClose={handleClose}>
