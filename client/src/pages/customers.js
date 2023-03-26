@@ -77,20 +77,23 @@ const Page = () => {
 
 
   const createNewClient = () => {
-    appAxios.post("/api/v1/clients", {
+    appAxios.post("/api/v1/clients/", {
       first_name: newClient.first_name,
       last_name: newClient.last_name,
+      gender: newClient.gender,
       age: newClient.age,
       weight: newClient.weight,
       height: newClient.height,
       target_weight: newClient.target_weight,
-      chronic_illness: newClient.chronic_illness
-    })
+      chronic_illnesses: newClient.chronic_illness,
+      user_id: localStorage.getItem("user_id")
+    }, { withCredentials: true })
       .then((res) => {
         console.log("CREATED");
+        setOpen(false);
       })
-      .catch(err = {
-
+      .catch((err) => {
+        console.log(err);
       })
   }
 
@@ -276,7 +279,7 @@ const Page = () => {
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={handleClose}>İptal</Button>
-                    <Button onClick={handleClose}>Ekle</Button>
+                    <Button onClick={createNewClient}>Ekle</Button>
                   </DialogActions>
                 </Dialog>
 
