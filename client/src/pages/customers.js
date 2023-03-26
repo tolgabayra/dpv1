@@ -249,7 +249,6 @@ const Page = () => {
 
               </div>
             </Stack>
-            <CustomersSearch />
              
            <CustomersTable />
 
