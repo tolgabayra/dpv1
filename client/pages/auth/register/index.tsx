@@ -29,7 +29,7 @@ const RegisterPage: Page = () => {
             username,
             email,
             password
-        })
+        },{withCredentials: true})
             .then(() => {
                 router.push("/")
                 toast.current?.show({ severity: 'success', summary: 'Başarılı', detail: 'Hesabınız Oluşturuldu', life: 3000 });
