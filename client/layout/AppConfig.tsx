@@ -217,15 +217,7 @@ const AppConfig = (props: AppConfigProps) => {
                     </div>
                 </div>
 
-                <h5>Fluent UI</h5>
-                <div className="grid">
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('fluent-light', 'light')}>
-                            <img src={`${contextPath}/layout/images/themes/fluent-light.png`} className="w-2rem h-2rem" alt="Fluent Light" />
-                        </button>
-                    </div>
-                </div>
-
+              
                 <h5>PrimeOne Design - 2022</h5>
                 <div className="grid">
                     <div className="col-3">
@@ -270,69 +262,7 @@ const AppConfig = (props: AppConfigProps) => {
                     </div>
                 </div>
 
-                <h5>PrimeOne Design - 2021</h5>
-                <div className="grid">
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('saga-blue', 'light')}>
-                            <img src={`${contextPath}/layout/images/themes/saga-blue.png`} className="w-2rem h-2rem" alt="Saga Blue" />
-                        </button>
-                    </div>
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('saga-green', 'light')}>
-                            <img src={`${contextPath}/layout/images/themes/saga-green.png`} className="w-2rem h-2rem" alt="Saga Green" />
-                        </button>
-                    </div>
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('saga-orange', 'light')}>
-                            <img src={`${contextPath}/layout/images/themes/saga-orange.png`} className="w-2rem h-2rem" alt="Saga Orange" />
-                        </button>
-                    </div>
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('saga-purple', 'light')}>
-                            <img src={`${contextPath}/layout/images/themes/saga-purple.png`} className="w-2rem h-2rem" alt="Saga Purple" />
-                        </button>
-                    </div>
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('vela-blue', 'dark')}>
-                            <img src={`${contextPath}/layout/images/themes/vela-blue.png`} className="w-2rem h-2rem" alt="Vela Blue" />
-                        </button>
-                    </div>
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('vela-green', 'dark')}>
-                            <img src={`${contextPath}/layout/images/themes/vela-green.png`} className="w-2rem h-2rem" alt="Vela Green" />
-                        </button>
-                    </div>
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('vela-orange', 'dark')}>
-                            <img src={`${contextPath}/layout/images/themes/vela-orange.png`} className="w-2rem h-2rem" alt="Vela Orange" />
-                        </button>
-                    </div>
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('vela-purple', 'dark')}>
-                            <img src={`${contextPath}/layout/images/themes/vela-purple.png`} className="w-2rem h-2rem" alt="Vela Purple" />
-                        </button>
-                    </div>
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('arya-blue', 'dark')}>
-                            <img src={`${contextPath}/layout/images/themes/arya-blue.png`} className="w-2rem h-2rem" alt="Arya Blue" />
-                        </button>
-                    </div>
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('arya-green', 'dark')}>
-                            <img src={`${contextPath}/layout/images/themes/arya-green.png`} className="w-2rem h-2rem" alt="Arya Green" />
-                        </button>
-                    </div>
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('arya-orange', 'dark')}>
-                            <img src={`${contextPath}/layout/images/themes/arya-orange.png`} className="w-2rem h-2rem" alt="Arya Orange" />
-                        </button>
-                    </div>
-                    <div className="col-3">
-                        <button className="p-link w-2rem h-2rem" onClick={() => changeTheme('arya-purple', 'dark')}>
-                            <img src={`${contextPath}/layout/images/themes/arya-purple.png`} className="w-2rem h-2rem" alt="Arya Purple" />
-                        </button>
-                    </div>
-                </div>
+               
             </Sidebar>
         </>
     );
