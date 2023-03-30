@@ -8,7 +8,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Hesap | Devias Kit
+        Hesap
       </title>
     </Head>
     <Box
