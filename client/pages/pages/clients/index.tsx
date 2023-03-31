@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import withAuth from '@/utils/auth';
 import getConfig from 'next/config';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
@@ -16,6 +17,8 @@ import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { ProductService } from '../../../demo/service/ProductService';
 import { Demo } from '../../../types/types';
+
+
 
 const Crud = () => {
     let emptyProduct: Demo.Product = {
@@ -396,4 +399,4 @@ const Crud = () => {
     );
 };
 
-export default Crud;
+export default withAuth(Crud);

@@ -6,7 +6,8 @@ class ClientService:
 
     @staticmethod
     def create(data):
-        client = Client(
+        try:
+            client = Client(
             user_id=data["user_id"],
             first_name=data["first_name"],
             last_name=data["last_name"],
@@ -17,12 +18,17 @@ class ClientService:
             target_weight=data["weight"],
             chronic_illnesses=data["chronic_illnesses"],
             package_id=data.get("package_id") # defeault değer none zorunlu değil
-
-        )
-        db.session.add(client)
-        db.session.commit()
-        db.session.refresh(client)
-        return client
+            )
+            db.session.add(client)
+            db.session.commit()
+            db.session.refresh(client)
+            
+            return client
+        
+        except Exception as e:
+            db.session.rollback()
+            return False
+       
 
     @staticmethod
     def update(data, id):

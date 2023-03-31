@@ -29,9 +29,11 @@ const RegisterPage: Page = () => {
             username,
             email,
             password
-        },{withCredentials: true})
+        }, { withCredentials: true })
             .then(() => {
-                router.push("/")
+                setTimeout(() => {
+                    router.push("/auth/login")
+                }, 3000)
                 toast.current?.show({ severity: 'success', summary: 'Başarılı', detail: 'Hesabınız Oluşturuldu', life: 3000 });
             })
             .catch(err => {
