@@ -8,7 +8,7 @@ function withAuth(WrappedComponent: any) {
     const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(() => {
-      fetch("http://localhost:5000/verify_token", {
+      fetch("http://localhost:5000/api/v1/auth/verify_token", {
         method: "POST",
         credentials: "include"
       })
