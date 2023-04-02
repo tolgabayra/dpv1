@@ -31,6 +31,7 @@ const LoginPage: Page = () => {
             .then((res) => {
                 console.log(res);
                 setTimeout(() => {
+                    localStorage.setItem("user_id", res.data.user_id)
                     router.push("/")
                 }, 3000)
                 toast.current?.show({ severity: 'success', summary: 'Başarılı', detail: 'Dashboard sayfasına yönlendiriliyorsunuz.', life: 3000 });

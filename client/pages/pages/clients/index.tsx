@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import withAuth from '@/utils/auth';
+import { appAxios } from '@/utils/axios';
 import getConfig from 'next/config';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
@@ -20,7 +21,8 @@ import { Demo } from '../../../types/types';
 
 
 
-const Crud = () => {
+const Crud = ({ loggedIn, userId }: any) => {
+    
     let emptyProduct: Demo.Product = {
         id: '',
         name: '',
@@ -41,6 +43,7 @@ const Crud = () => {
     const [selectedProducts, setSelectedProducts] = useState<Demo.Product[]>([]);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
+    const [userById, setUserById] = useState('')
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<Demo.Product[]>>(null);
     const contextPath = getConfig().publicRuntimeConfig.contextPath;
@@ -295,6 +298,18 @@ const Crud = () => {
         </>
     );
 
+
+    useEffect(() => {                
+        appAxios.get(`/api/v1/clients/by_user/${localStorage.getItem("user_id")}`)
+            .then((res) => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }, []);
+
+
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -398,5 +413,35 @@ const Crud = () => {
         </div>
     );
 };
+
+
+{
+    /*
+
+export async function getStaticProps() {    
+    try {
+        const res = await appAxios.get(`/api/v1/clients/by_user/1`);
+        const clients = res.data;
+
+        return {
+            props: {
+                clients
+            }
+        };
+    } catch (error) {
+        console.log(error);
+    }
+    return {
+        props: {
+            clients: []
+        }
+    }
+}
+
+
+     */
+}
+
+
 
 export default withAuth(Crud);

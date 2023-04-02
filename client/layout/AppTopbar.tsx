@@ -19,6 +19,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
         })
         if (res.ok) {
             toast.current?.show({ severity: 'success', summary: 'Başarılı', detail: 'Çıkış yapılıyor.', life: 3000 });
+            localStorage.clear()
             setTimeout(() => {
                 router.push("/auth/login")
             }, 3000)
