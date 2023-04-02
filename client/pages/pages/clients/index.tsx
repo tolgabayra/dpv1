@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import withAuth from '@/utils/auth';
 import { appAxios } from '@/utils/axios';
 import getConfig from 'next/config';
 import { Button } from 'primereact/button';
@@ -16,112 +15,134 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { ProductService } from '../../../demo/service/ProductService';
 import { Demo } from '../../../types/types';
 
 
+interface Client {
+    id: number,
+    first_name: string,
+    last_name: string,
+    age: number,
+    gender: string
+    height: number,
+    weight: number,
+    target_weight: number,
+    chronic_ilnessess: string
+}
 
-const Crud = ({ loggedIn, userId }: any) => {
-    
-    let emptyProduct: Demo.Product = {
-        id: '',
-        name: '',
-        image: '',
-        description: '',
-        category: '',
-        price: 0,
-        quantity: 0,
-        rating: 0,
-        inventoryStatus: 'INSTOCK'
+const Crud = () => {
+
+    let emptyClient: any = {
+        first_name: "",
+        last_name: "",
+        age: 0,
+        gender: "",
+        height: 0,
+        weight: 0,
+        target_weight: 0,
+        chronic_ilnessess: ""
     };
 
-    const [products, setProducts] = useState<Demo.Product[]>([]);
-    const [productDialog, setProductDialog] = useState(false);
-    const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-    const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-    const [product, setProduct] = useState<Demo.Product>(emptyProduct);
-    const [selectedProducts, setSelectedProducts] = useState<Demo.Product[]>([]);
-    const [submitted, setSubmitted] = useState(false);
+    const [clients, setClients] = useState([]);
+    const [clientDialog, setClientDialog] = useState(false);
+    const [deleteClientDialog, setDeleteClientDialog] = useState(false);
+    const [deleteClientsDialog, setDeleteClientsDialog] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
-    const [userById, setUserById] = useState('')
-    const toast = useRef<Toast>(null);
-    const dt = useRef<DataTable<Demo.Product[]>>(null);
-    const contextPath = getConfig().publicRuntimeConfig.contextPath;
+    const [submitted, setSubmitted] = useState<boolean>(false);
+    const [client, setClient] = useState<Client>(emptyClient);
+    const toast = useRef<Toast>(null)
+    const [selectedClients, setSelectedClients] = useState<Client[]>([]);
+    const dt = useRef<DataTable>(null);
 
     useEffect(() => {
-        const productService = new ProductService();
-        productService.getProducts().then((data) => setProducts(data));
+        appAxios.get(`/api/v1/clients/by_user/${localStorage.getItem("user_id")}`)
+            .then((res) => {
+                setClients(res.data.Clients)
+            })
+            .catch(err => {
+                console.log(err);
+            })
     }, []);
 
-    const formatCurrency = (value: number) => {
-        return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    };
 
     const openNew = () => {
-        setProduct(emptyProduct);
+        setClient(emptyClient);
         setSubmitted(false);
-        setProductDialog(true);
+        setClientDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setProductDialog(false);
+        setClientDialog(false);
     };
 
-    const hideDeleteProductDialog = () => {
-        setDeleteProductDialog(false);
+    const hideDeleteclientDialog = () => {
+        setDeleteClientDialog(false);
     };
 
-    const hideDeleteProductsDialog = () => {
-        setDeleteProductsDialog(false);
+    const hideDeleteclientsDialog = () => {
+        setDeleteClientsDialog(false);
     };
 
-    const saveProduct = () => {
+    const saveclient = () => {
         setSubmitted(true);
+        if (client.first_name.trim()) {
+            let _clients = [...clients];
+            let _client = { ...client };
+            if (client.id) {
+                const index = findIndexById(client.id);
 
-        if (product.name.trim()) {
-            let _products = [...products];
-            let _product = { ...product };
-            if (product.id) {
-                const index = findIndexById(product.id);
-
-                _products[index] = _product;
-                toast.current?.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+                _clients[index] = _client;
+                toast.current?.show({ severity: 'success', summary: 'Successful', detail: 'client Updated', life: 3000 });
             } else {
-                _product.id = createId();
-                _product.image = 'product-placeholder.svg';
-                _products.push(_product);
-                toast.current?.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+                appAxios.post("/api/v1/clients/", {
+                    first_name: _client.first_name,
+                    last_name: _client.last_name,
+                    gender: _client.gender,
+                    height: _client.height,
+                    weight: _client.weight,
+                    target_weight: _client.target_weight,
+                    chronic_ilnessess: _client.chronic_ilnessess
+                }, { withCredentials: true })
+                    .then((res) => {
+                        console.log(res);
+
+                    })
+                    .catch(err => {
+                        console.log(err);
+
+                    })
+                _clients.push(_client);
+                toast.current?.show({ severity: 'success', summary: 'Successful', detail: 'client Created', life: 3000 });
             }
 
-            setProducts(_products);
-            setProductDialog(false);
-            setProduct(emptyProduct);
+            setClients(_clients);
+            setClientDialog(false);
+            setClient(emptyClient);
         }
     };
 
-    const editProduct = (product: Demo.Product) => {
-        setProduct({ ...product });
-        setProductDialog(true);
+    const editClient = (client: any) => {
+        setClient({ ...client });
+        setClientDialog(true);
     };
 
-    const confirmDeleteProduct = (product: Demo.Product) => {
-        setProduct(product);
-        setDeleteProductDialog(true);
+    const confirmDeleteClient = (client: any) => {
+        setClient(client);
+        setDeleteClientDialog(true);
     };
 
-    const deleteProduct = () => {
-        let _products = products.filter((val) => val.id !== product.id);
-        setProducts(_products);
-        setDeleteProductDialog(false);
-        setProduct(emptyProduct);
-        toast.current?.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+    const deleteClient = () => {
+        let _clients = clients.filter((val) => val.id !== client.id);
+        setClients(_clients);
+        setDeleteClientDialog(false);
+        setClient(emptyClient);
     };
 
-    const findIndexById = (id: string) => {
+    const findIndexById = (id: number) => {
         let index = -1;
-        for (let i = 0; i < products.length; i++) {
-            if (products[i].id === id) {
+        for (let i = 0; i < clients.length; i++) {
+            if (clients[i].id === id) {
                 index = i;
                 break;
             }
@@ -130,59 +151,49 @@ const Crud = ({ loggedIn, userId }: any) => {
         return index;
     };
 
-    const createId = () => {
-        let id = '';
-        let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    };
-
     const exportCSV = () => {
         dt.current?.exportCSV();
     };
 
     const confirmDeleteSelected = () => {
-        setDeleteProductsDialog(true);
+        setDeleteClientsDialog(true);
     };
 
-    const deleteSelectedProducts = () => {
-        let _products = products.filter((val) => !selectedProducts?.includes(val));
-        setProducts(_products);
-        setDeleteProductsDialog(false);
-        setSelectedProducts([]);
-        toast.current?.show({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
+    const deleteSelectedClients = () => {
+        let _clients = clients.filter((val) => !selectedClients?.includes(val));
+        setClients(_clients);
+        setDeleteClientsDialog(false);
+        setSelectedClients([]);
     };
 
     const onCategoryChange = (e: RadioButtonChangeEvent) => {
-        let _product = { ...product };
-        _product['category'] = e.value;
-        setProduct(_product);
+        let _client = { ...client };
+        _client['gender'] = e.value;
+        setClient(_client);
     };
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => {
         const val = (e.target && e.target.value) || '';
-        let _product = { ...product };
-        _product[`${name}`] = val;
+        let _client = { ...client };
+        _client[`${name}`] = val;
 
-        setProduct(_product);
+        setClient(_client);
     };
 
     const onInputNumberChange = (e: InputNumberValueChangeEvent, name: string) => {
         const val = e.value || 0;
-        let _product = { ...product };
-        _product[`${name}`] = val;
+        let _client = { ...client };
+        _client[`${name}`] = val;
 
-        setProduct(_product);
+        setClient(_client);
     };
 
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <Button label="Yeni" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
-                    <Button label="Sil" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} />
+                    <Button label="New" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
+                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedClients || !selectedClients.length} />
                 </div>
             </React.Fragment>
         );
@@ -197,74 +208,66 @@ const Crud = ({ loggedIn, userId }: any) => {
         );
     };
 
-    const codeBodyTemplate = (rowData: Demo.Product) => {
+    const codeBodyTemplate = (rowData: any) => {
         return (
             <>
-                <span className="p-column-title">Code</span>
-                {rowData.code}
+                <span className="p-column-title">Ad ve Soyad</span>
+                {rowData.first_name} {rowData.last_name}
             </>
         );
     };
 
-    const nameBodyTemplate = (rowData: Demo.Product) => {
+    const nameBodyTemplate = (rowData: any) => {
         return (
             <>
-                <span className="p-column-title">Name</span>
-                {rowData.name}
+                <span className="p-column-title">Yaş</span>
+                {rowData.age}
             </>
         );
     };
 
-    const imageBodyTemplate = (rowData: Demo.Product) => {
+
+    const priceBodyTemplate = (rowData: any) => {
         return (
             <>
-                <span className="p-column-title">Image</span>
-                <img src={`${contextPath}/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" />
+                <span className="p-column-title">Cinsiyet</span>
+                {rowData.gender}
             </>
         );
     };
 
-    const priceBodyTemplate = (rowData: Demo.Product) => {
+    const categoryBodyTemplate = (rowData: any) => {
         return (
             <>
-                <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price as number)}
+                <span className="p-column-title">Boy</span>
+                {rowData.height}
             </>
         );
     };
 
-    const categoryBodyTemplate = (rowData: Demo.Product) => {
+    const ratingBodyTemplate = (rowData: any) => {
         return (
             <>
-                <span className="p-column-title">Category</span>
-                {rowData.category}
+                <span className="p-column-title">Kilo</span>
+                {rowData.weight}
             </>
         );
     };
 
-    const ratingBodyTemplate = (rowData: Demo.Product) => {
-        return (
-            <>
-                <span className="p-column-title">Reviews</span>
-                <Rating value={rowData.rating} readOnly cancel={false} />
-            </>
-        );
-    };
-
-    const statusBodyTemplate = (rowData: Demo.Product) => {
+    const statusBodyTemplate = (rowData: any) => {
         return (
             <>
                 <span className="p-column-title">Status</span>
-                <span className={`product-badge status-${rowData.inventoryStatus?.toLowerCase()}`}>{rowData.inventoryStatus}</span>
+                {rowData.chronic_ilnessess ?? "Yok"}
             </>
         );
     };
 
-    const actionBodyTemplate = (rowData: Demo.Product) => {
+    const actionBodyTemplate = (rowData: any) => {
         return (
             <>
-                <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => editProduct(rowData)} />
-                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteProduct(rowData)} />
+                <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => editClient(rowData)} />
+                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteClient(rowData)} />
             </>
         );
     };
@@ -279,36 +282,24 @@ const Crud = ({ loggedIn, userId }: any) => {
         </div>
     );
 
-    const productDialogFooter = (
+    const clientDialogFooter = (
         <>
-            <Button label="Cancel" icon="pi pi-times" text onClick={hideDialog} />
-            <Button label="Save" icon="pi pi-check" text onClick={saveProduct} />
+            <Button label="İptal" icon="pi pi-times" text onClick={hideDialog} />
+            <Button label="Onayla" icon="pi pi-check" text onClick={saveclient} />
         </>
     );
-    const deleteProductDialogFooter = (
+    const deleteclientDialogFooter = (
         <>
-            <Button label="No" icon="pi pi-times" text onClick={hideDeleteProductDialog} />
-            <Button label="Yes" icon="pi pi-check" text onClick={deleteProduct} />
+            <Button label="No" icon="pi pi-times" text onClick={hideDeleteclientDialog} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deleteClient} />
         </>
     );
-    const deleteProductsDialogFooter = (
+    const deleteclientsDialogFooter = (
         <>
-            <Button label="No" icon="pi pi-times" text onClick={hideDeleteProductsDialog} />
-            <Button label="Yes" icon="pi pi-check" text onClick={deleteSelectedProducts} />
+            <Button label="No" icon="pi pi-times" text onClick={hideDeleteclientsDialog} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deleteSelectedClients} />
         </>
     );
-
-
-    useEffect(() => {                
-        appAxios.get(`/api/v1/clients/by_user/${localStorage.getItem("user_id")}`)
-            .then((res) => {
-                console.log(res);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }, []);
-
 
     return (
         <div className="grid crud-demo">
@@ -319,93 +310,101 @@ const Crud = ({ loggedIn, userId }: any) => {
 
                     <DataTable
                         ref={dt}
-                        value={products}
-                        selection={selectedProducts}
-                        onSelectionChange={(e) => setSelectedProducts(e.value as Demo.Product[])}
+                        value={clients}
+                        selection={selectedClients}
+                        onSelectionChange={(e) => setSelectedClients(e.value as Demo.client[])}
                         dataKey="id"
                         paginator
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} clients"
                         globalFilter={globalFilter}
-                        emptyMessage="No products found."
+                        emptyMessage="Danışan Bulunamadı!"
                         header={header}
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column field="code" header="Code" sortable body={codeBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column field="name" header="Name" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column header="Image" body={imageBodyTemplate}></Column>
-                        <Column field="price" header="Price" body={priceBodyTemplate} sortable></Column>
-                        <Column field="category" header="Category" sortable body={categoryBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column field="rating" header="Reviews" body={ratingBodyTemplate} sortable></Column>
+                        <Column field="code" header="Ad ve Soyad" sortable body={codeBodyTemplate}></Column>
+                        <Column field="name" header="Yaş" sortable body={nameBodyTemplate}></Column>
+                        <Column field="price" header="Cinsiyet" body={priceBodyTemplate} sortable></Column>
+                        <Column field="category" header="Boy(cm)" sortable body={categoryBodyTemplate}></Column>
+                        <Column field="rating" header="Kilo(kg)" body={ratingBodyTemplate} sortable></Column>
                         <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column header="İşlemler" body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
-                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                        {product.image && <img src={`${contextPath}/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
-                        <div className="field">
-                            <label htmlFor="name">Name</label>
-                            <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
-                        </div>
-                        <div className="field">
-                            <label htmlFor="description">Description</label>
-                            <InputTextarea id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
+                    <Dialog visible={clientDialog} style={{ width: '450px' }} header="Client Details" modal className="p-fluid" footer={clientDialogFooter} onHide={hideDialog}>
+                        <div className="formgrid grid">
+                            <div className='field col'>
+                                <label htmlFor="first_name">Ad</label>
+                                <InputText id="first_name" value={client.first_name} onChange={(e) => onInputChange(e, 'first_name')} required autoFocus className={classNames({ 'p-invalid': submitted && !client.first_name })} />
+                                {submitted && !client.first_name && <small className="p-invalid">Name is required.</small>}
+                            </div>
+                            <div className='field col'>
+                                <label htmlFor="last_name">Soyad</label>
+                                <InputText id="last_name" value={client.last_name} onChange={(e) => onInputChange(e, 'last_name')} required autoFocus className={classNames({ 'p-invalid': submitted && !client.last_name })} />
+                                {submitted && !client.last_name && <small className="p-invalid">Lastname is required.</small>}
+                            </div>
                         </div>
 
+
                         <div className="field">
-                            <label className="mb-3">Category</label>
+                            <label className="mb-3">Cinsiyet</label>
                             <div className="formgrid grid">
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category1" name="category" value="Accessories" onChange={onCategoryChange} checked={product.category === 'Accessories'} />
-                                    <label htmlFor="category1">Accessories</label>
+                                <div className="field-radiobutton col-4">
+                                    <RadioButton inputId="category1" name="category" value="Erkek" onChange={onCategoryChange} checked={client.gender === 'Erkek'} />
+                                    <label htmlFor="category1">Erkek</label>
                                 </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category2" name="category" value="Clothing" onChange={onCategoryChange} checked={product.category === 'Clothing'} />
-                                    <label htmlFor="category2">Clothing</label>
+                                <div className="field-radiobutton col-4">
+                                    <RadioButton inputId="category2" name="category" value="Kadın" onChange={onCategoryChange} checked={client.gender === 'Kadın'} />
+                                    <label htmlFor="category2">Kadın</label>
                                 </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category3" name="category" value="Electronics" onChange={onCategoryChange} checked={product.category === 'Electronics'} />
-                                    <label htmlFor="category3">Electronics</label>
+                                <div className="field-radiobutton col-4">
+                                    <RadioButton inputId="category3" name="category" value="Diğer" onChange={onCategoryChange} checked={client.gender === 'Diğer'} />
+                                    <label htmlFor="category3">Diğer</label>
                                 </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category4" name="category" value="Fitness" onChange={onCategoryChange} checked={product.category === 'Fitness'} />
-                                    <label htmlFor="category4">Fitness</label>
-                                </div>
+
                             </div>
                         </div>
 
                         <div className="formgrid grid">
                             <div className="field col">
-                                <label htmlFor="price">Price</label>
-                                <InputNumber id="price" value={product.price} onValueChange={(e) => onInputNumberChange(e, 'price')} mode="currency" currency="USD" locale="en-US" />
+                                <label htmlFor="price">Boy</label>
+                                <InputNumber id="price" value={client.height} onValueChange={(e) => onInputNumberChange(e, 'height')} />
                             </div>
                             <div className="field col">
-                                <label htmlFor="quantity">Quantity</label>
-                                <InputNumber id="quantity" value={product.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} />
+                                <label htmlFor="quantity">Kilo</label>
+                                <InputNumber id="quantity" value={client.weight} onValueChange={(e) => onInputNumberChange(e, 'weight')} />
+                            </div>
+                            <div className="field col">
+                                <label htmlFor="quantity">Hedef Kilo</label>
+                                <InputNumber id="quantity" value={client.target_weight} onValueChange={(e) => onInputNumberChange(e, 'target_weight')} />
                             </div>
                         </div>
+                        <div className="field">
+                            <label htmlFor="description">Kronik Hastalık</label>
+                            <InputTextarea id="description" value={client.chronic_ilnessess} onChange={(e) => onInputChange(e, 'chronic_ilnessess')} required rows={3} cols={20} />
+                        </div>
+
                     </Dialog>
 
-                    <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
+                    <Dialog visible={deleteClientDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteclientDialogFooter} onHide={hideDeleteclientDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {product && (
+                            {client && (
                                 <span>
-                                    Are you sure you want to delete <b>{product.name}</b>?
+                                    Are you sure you want to delete <b>{client.first_name} {client.last_name}</b>?
                                 </span>
                             )}
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteProductsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
+                    <Dialog visible={deleteClientsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteclientsDialogFooter} onHide={hideDeleteclientsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {product && <span>Are you sure you want to delete the selected products?</span>}
+                            {client && <span>Are you sure you want to delete the selected clients?</span>}
                         </div>
                     </Dialog>
                 </div>
@@ -414,34 +413,4 @@ const Crud = ({ loggedIn, userId }: any) => {
     );
 };
 
-
-{
-    /*
-
-export async function getStaticProps() {    
-    try {
-        const res = await appAxios.get(`/api/v1/clients/by_user/1`);
-        const clients = res.data;
-
-        return {
-            props: {
-                clients
-            }
-        };
-    } catch (error) {
-        console.log(error);
-    }
-    return {
-        props: {
-            clients: []
-        }
-    }
-}
-
-
-     */
-}
-
-
-
-export default withAuth(Crud);
+export default Crud;

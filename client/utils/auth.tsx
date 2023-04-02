@@ -15,7 +15,7 @@ function withAuth(WrappedComponent: any) {
       })
         .then((res) => {
           if (res.ok) {
-            res.json().then((data)=> setUserId(data.user_id))
+            res.json().then((data) => setUserId(data.user_id))
             setLoggedIn(true);
           } else {
             router.push("/auth/login");
@@ -29,6 +29,7 @@ function withAuth(WrappedComponent: any) {
     }
 
     if (!loggedIn) {
+      localStorage.clear()
       return null;
     }
 
