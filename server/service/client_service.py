@@ -15,7 +15,7 @@ class ClientService:
             age=data["age"],
             height=data["height"],
             weight=data["weight"],
-            target_weight=data["weight"],
+            target_weight=data["target_weight"],
             chronic_illnesses=data["chronic_illnesses"],
             package_id=data.get("package_id") # defeault değer none zorunlu değil
             )
