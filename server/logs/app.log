@@ -30,3 +30,5 @@
 2023-04-02 15:50:23,149 - util.logger - INFO - This is an info message
 2023-04-02 16:08:19,272 - util.logger - INFO - This is an info message
 2023-04-02 16:09:40,118 - util.logger - INFO - This is an info message
+2023-04-02 20:33:14,203 - util.logger - INFO - This is an info message
+2023-04-02 23:49:31,039 - util.logger - INFO - This is an info message
