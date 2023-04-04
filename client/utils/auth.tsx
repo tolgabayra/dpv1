@@ -6,14 +6,16 @@ function withAuth(WrappedComponent: any) {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [userId, setUserId] = useState("")
 
     useEffect(() => {
-      fetch("http://localhost:5000/verify_token", {
+      fetch("http://localhost:5000/api/v1/auth/verify_token", {
         method: "POST",
         credentials: "include"
       })
         .then((res) => {
           if (res.ok) {
+            res.json().then((data) => setUserId(data.user_id))
             setLoggedIn(true);
           } else {
             router.push("/auth/login");
@@ -27,10 +29,11 @@ function withAuth(WrappedComponent: any) {
     }
 
     if (!loggedIn) {
+      localStorage.clear()
       return null;
     }
 
-    return <WrappedComponent loggedIn={loggedIn} {...props} />;
+    return <WrappedComponent loggedIn={loggedIn} userId={userId} {...props} />;
   };
 
   return Wrapper;

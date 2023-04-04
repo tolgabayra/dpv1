@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, request
 from service.auth_service import AuthService
 from util.helper import Helper
+from util.logger import logger
 import jwt
-auth_controller = Blueprint("auth_controller", __name__)
 
+
+auth_controller = Blueprint("auth_controller", __name__)
 
 @auth_controller.route("/login", methods=["POST"])
 def login():
@@ -17,6 +19,7 @@ def login():
 
     response = jsonify({"access_token": data["access_token"], "user_id": data["user_id"]})
     response.set_cookie('access_token', data["access_token"], httponly=True)
+    logger.info('This is an info message')
     return response, 200
 
 

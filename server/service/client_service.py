@@ -5,17 +5,17 @@ from model import db
 class ClientService:
 
     @staticmethod
-    def create(data):
+    def create(data, user_id):
         try:
             client = Client(
-            user_id=data["user_id"],
+            user_id=user_id,
             first_name=data["first_name"],
             last_name=data["last_name"],
             gender=data["gender"],
             age=data["age"],
             height=data["height"],
             weight=data["weight"],
-            target_weight=data["weight"],
+            target_weight=data["target_weight"],
             chronic_illnesses=data["chronic_illnesses"],
             package_id=data.get("package_id") # defeault değer none zorunlu değil
             )

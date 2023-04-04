@@ -1,6 +1,8 @@
-import { verifyToken } from "@/hooks/authHook";
+import withAuth from "@/utils/auth"
 
-export default function Home() {
+
+
+const Home = () => {
   return (
     <p>
       Home
@@ -8,25 +10,5 @@ export default function Home() {
   )
 }
 
-export const getServerSideProps = async (context: any) => {
-  const { req } = context;
 
-  // Do authentication logic here, e.g. verify token in cookie
-  const token = req.cookies.token;
-  const isLoggedIn = await verifyToken(token);
-
-  if (!isLoggedIn) {
-    return {
-      redirect: {
-        destination: '/auth/login',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      loggedIn: true,
-    },
-  };
-};
+export default withAuth(Home)

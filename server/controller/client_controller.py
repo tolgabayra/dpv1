@@ -1,17 +1,19 @@
 from flask import Blueprint, jsonify, request
 from service.client_service import ClientService
+from decorator.jwt_verify import jwt_required
 
 client_controller = Blueprint("client_controller", __name__)
 
 
 @client_controller.route("/", methods=["POST"])
-def create_client():
+@jwt_required
+def create_client(user_id):
     data = request.get_json()
-    client = ClientService.create(data)
+    client = ClientService.create(data, user_id)
     if client:
          return jsonify({"Message: ": "Client Created Successfully."}), 201
     else:
-        return jsonify({"Message: ": "Sorry, client can not created. Check your informations"})
+        return jsonify({"Message: ": "Sorry, client can not created. Check your informations"}), 500
 
    
 @client_controller.route("by_user/<int:user_id>", methods=["GET"])
