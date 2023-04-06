@@ -76,7 +76,7 @@ const RegisterPage: Page = () => {
                             <div className="flex align-items-center justify-content-between mb-5 gap-5">
 
                                 <Link href="/auth/login" className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
-                                    Hesabınız Var Mı? 
+                                    Hesabınız Var Mı?      
                                 </Link>
                             </div>
                             <button onClick={handleRegister} className=" bg-indigo-400 p-2 px-6 text-white border-0 hover:bg-indigo-500 hover:pointer cursor-pointer ">Kayıt Ol</button>
